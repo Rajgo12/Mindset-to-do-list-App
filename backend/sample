@@ -1,0 +1,373 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1:3308
+-- Generation Time: Jun 08, 2025 at 07:14 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `mindset_db`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `collaboration`
+--
+
+CREATE TABLE `collaboration` (
+  `id` int(11) NOT NULL,
+  `collaborator_id` int(11) NOT NULL,
+  `requested_id` int(11) NOT NULL,
+  `task_item_id` int(11) NOT NULL,
+  `status` enum('pending','accepted','rejected') DEFAULT 'pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `friends`
+--
+
+CREATE TABLE `friends` (
+  `id` int(11) NOT NULL,
+  `user1_id` int(11) NOT NULL,
+  `user2_id` int(11) NOT NULL
+) ;
+
+--
+-- Dumping data for table `friends`
+--
+
+INSERT INTO `friends` (`id`, `user1_id`, `user2_id`) VALUES
+(5, 2, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `friend_requests`
+--
+
+CREATE TABLE `friend_requests` (
+  `id` int(11) NOT NULL,
+  `collaborator_id` int(11) NOT NULL,
+  `requested_id` int(11) NOT NULL,
+  `status` enum('pending','accepted','rejected') DEFAULT 'pending'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `friend_requests`
+--
+
+INSERT INTO `friend_requests` (`id`, `collaborator_id`, `requested_id`, `status`) VALUES
+(5, 2, 3, 'accepted'),
+(6, 1, 3, 'pending');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notes`
+--
+
+CREATE TABLE `notes` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notes`
+--
+
+INSERT INTO `notes` (`id`, `user_id`, `title`, `content`, `created_at`, `updated_at`) VALUES
+(6, 2, 'sample 1', 'dGhpcyBpcyBzYW1wbGUgbnVtYmVyIDEKCnNvIGhpIGhlbGxvIEkgZG9uJ3Qga25vdyBpZiB0aGlzIGlzIHdvcmtpZ24KCnRoaXMgaXMgc2FtcGxlIG51bWJlciAxCgpzbyBoaSBoZWxsbyBJIGRvbid0IGtub3cgaWYgdGhpcyBpcyB3b3JraWdu', '2025-06-06 15:48:04', '2025-06-06 15:51:28'),
+(7, 2, 'sample 2', 'dHJpYWwgMgphc2QKYXNkCmFzZAphc2QKYXNk', '2025-06-06 16:42:40', '2025-06-06 16:45:35');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reminders`
+--
+
+CREATE TABLE `reminders` (
+  `id` int(11) NOT NULL,
+  `task_item_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `reminder_time` datetime NOT NULL,
+  `is_completed` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `reminders`
+--
+
+INSERT INTO `reminders` (`id`, `task_item_id`, `title`, `reminder_time`, `is_completed`) VALUES
+(1, 12, 'test 3', '2025-06-07 17:05:00', 0),
+(2, 13, 'test 4', '2025-06-07 17:26:00', 1),
+(3, 14, 'test 5', '2025-06-10 17:27:00', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tasks`
+--
+
+CREATE TABLE `tasks` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tasks`
+--
+
+INSERT INTO `tasks` (`id`, `user_id`, `title`) VALUES
+(19, 1, '2'),
+(23, 1, 'qwe'),
+(31, 1, 'e'),
+(32, 3, 'practice'),
+(33, 2, 'sample 1');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `task_item`
+--
+
+CREATE TABLE `task_item` (
+  `id` int(11) NOT NULL,
+  `task_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `deadline` datetime DEFAULT NULL,
+  `is_completed` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `task_item`
+--
+
+INSERT INTO `task_item` (`id`, `task_id`, `title`, `deadline`, `is_completed`) VALUES
+(11, 33, 'test 2i', '2025-06-26 17:04:00', 1),
+(12, 33, 'test 3', '2025-06-07 17:05:00', 0),
+(13, 33, 'test 4', '2025-06-07 17:26:00', 1),
+(14, 33, 'test 5', '2025-06-10 17:27:00', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `profile_pic` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `profile_pic`, `created_at`) VALUES
+(1, 'rajgo', 'rajgo12@gmail.com', '$2y$10$9eY0ycpRz44c5VTdGqaNauJFl6SfKRPobopEPEEFAdRTBHoLKXKMe', NULL, '2025-06-04 14:30:39'),
+(2, 'raj', 'raj@gmail.com', '$2y$10$lfjf8UhVljDaj2AYwfIfDerU77/zBR5EkX6no50RrY2lvIH3LTxdC', NULL, '2025-06-04 17:37:34'),
+(3, 'Mikay', 'msgorogonio@mcm.edu.ph', '$2y$10$duLvTfFdxF0TJeDBmWg0f./rzp0ayPnnE0Sad0F0qtynS3nSz6zo2', NULL, '2025-06-06 12:49:00'),
+(4, 'test1', 'test1@gmail.com', '$2y$10$rfsPjNY7IInOeng13ouoEuLtzR8nhEJEL9csfo59MkmzRX9UMbd8a', NULL, '2025-06-06 14:59:29'),
+(5, 'test2', 'test2@gmail.com', '$2y$10$8y6.KOohKCPNQMm8AhUQtOOk5OJqx.92dVMnOti8EhSjnBvs9GML2', NULL, '2025-06-06 14:59:46'),
+(6, 'test3', 'test3@gmail.com', '$2y$10$3hyFq4QR.XmXGmaNRGJhEOkEocfNt6XyiWJXLJgJjjBNmhL3h.sYu', NULL, '2025-06-06 15:01:38');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `collaboration`
+--
+ALTER TABLE `collaboration`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_collab` (`collaborator_id`,`requested_id`,`task_item_id`),
+  ADD KEY `collaborator_id` (`collaborator_id`),
+  ADD KEY `requested_id` (`requested_id`),
+  ADD KEY `task_item_id` (`task_item_id`);
+  ALTER TABLE `collaboration`
+  ADD COLUMN `is_finished` TINYINT(1) NOT NULL DEFAULT 0 AFTER `status`;
+
+--
+-- Indexes for table `friends`
+--
+ALTER TABLE `friends`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_friendship` (`user1_id`,`user2_id`),
+  ADD KEY `user1_id` (`user1_id`),
+  ADD KEY `user2_id` (`user2_id`);
+
+--
+-- Indexes for table `friend_requests`
+--
+ALTER TABLE `friend_requests`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_request` (`collaborator_id`,`requested_id`),
+  ADD KEY `collaborator_id` (`collaborator_id`),
+  ADD KEY `requested_id` (`requested_id`);
+
+--
+-- Indexes for table `notes`
+--
+ALTER TABLE `notes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `reminders`
+--
+ALTER TABLE `reminders`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `task_item_id` (`task_item_id`);
+
+--
+-- Indexes for table `tasks`
+--
+ALTER TABLE `tasks`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `task_item`
+--
+ALTER TABLE `task_item`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `task_id` (`task_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `collaboration`
+--
+ALTER TABLE `collaboration`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `friends`
+--
+ALTER TABLE `friends`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `friend_requests`
+--
+ALTER TABLE `friend_requests`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `notes`
+--
+ALTER TABLE `notes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `reminders`
+--
+ALTER TABLE `reminders`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `tasks`
+--
+ALTER TABLE `tasks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT for table `task_item`
+--
+ALTER TABLE `task_item`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `collaboration`
+--
+ALTER TABLE `collaboration`
+  ADD CONSTRAINT `fk_collab_requested` FOREIGN KEY (`requested_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_collab_requester` FOREIGN KEY (`collaborator_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_collab_task_item` FOREIGN KEY (`task_item_id`) REFERENCES `task_item` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `friends`
+--
+ALTER TABLE `friends`
+  ADD CONSTRAINT `fk_friends_user1` FOREIGN KEY (`user1_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_friends_user2` FOREIGN KEY (`user2_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `friend_requests`
+--
+ALTER TABLE `friend_requests`
+  ADD CONSTRAINT `fk_friend_req_requested` FOREIGN KEY (`requested_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_friend_req_requester` FOREIGN KEY (`collaborator_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `notes`
+--
+ALTER TABLE `notes`
+  ADD CONSTRAINT `notes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `reminders`
+--
+ALTER TABLE `reminders`
+  ADD CONSTRAINT `reminders_ibfk_1` FOREIGN KEY (`task_item_id`) REFERENCES `task_item` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tasks`
+--
+ALTER TABLE `tasks`
+  ADD CONSTRAINT `tasks_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `task_item`
+--
+ALTER TABLE `task_item`
+  ADD CONSTRAINT `fk_taskcontent_task` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
